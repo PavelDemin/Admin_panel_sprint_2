@@ -1,25 +1,25 @@
 from django.contrib import admin
-from .models import Filmwork
+from .models import FilmWork
 from .models import Genre
-from .models import GenreFilmwork
-from .models import PersonFilmwork
+from .models import GenreFilmWork
+from .models import PersonFilmWork
 from .models import Person
 
 
-class GenreFilmworkInline(admin.TabularInline):
+class GenreFilmWorkInline(admin.TabularInline):
     exclude = ('id',)
-    model = GenreFilmwork
+    model = GenreFilmWork
     extra = 1
 
 
-class PersonFilmworkInline(admin.TabularInline):
+class PersonFilmWorkInline(admin.TabularInline):
     exclude = ('id',)
-    model = PersonFilmwork
+    model = PersonFilmWork
     extra = 1
 
 
-@admin.register(Filmwork)
-class FilmworkAdmin(admin.ModelAdmin):
+@admin.register(FilmWork)
+class FilmWorkAdmin(admin.ModelAdmin):
 
     list_display = ('title', 'type', 'creation_date', 'rating')
     list_filter = ('type',)
@@ -29,8 +29,8 @@ class FilmworkAdmin(admin.ModelAdmin):
     )
 
     inlines = [
-        GenreFilmworkInline,
-        PersonFilmworkInline
+        GenreFilmWorkInline,
+        PersonFilmWorkInline
     ]
 
 

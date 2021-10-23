@@ -27,9 +27,9 @@ class Genre(TimeStampedMixin):
         db_table = '"content"."genre"'
 
 
-class GenreFilmwork(models.Model):
+class GenreFilmWork(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, unique=True)
-    film_work = models.ForeignKey('Filmwork', to_field='id', on_delete=models.CASCADE)
+    film_work = models.ForeignKey('FilmWork', to_field='id', on_delete=models.CASCADE)
     genre = models.ForeignKey('Genre', to_field='id', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -40,29 +40,9 @@ class GenreFilmwork(models.Model):
         ]
 
 
-class FilmworkType(models.TextChoices):
+class FilmWorkType(models.TextChoices):
     MOVIE = 'movie', _('movie')
     TV_SHOW = 'tv_show', _('TV Show')
-
-
-class Filmwork(TimeStampedMixin):
-    id = models.UUIDField(primary_key=True, default=uuid4, unique=True)
-    title = models.CharField(_('title'), max_length=255)
-    description = models.TextField(_('description'), blank=True, null=True)
-    creation_date = models.DateField(_('creation date'), blank=True, null=True)
-    certificate = models.TextField(_('certificate'), blank=True, null=True)
-    file_path = models.FileField(_('file'), upload_to='film_works/', blank=True, null=True)
-    rating = models.FloatField(_('rating'), validators=[MinValueValidator(0)], blank=True, null=True)
-    type = models.CharField(_('type'), max_length=50, choices=FilmworkType.choices)
-    genres = models.ManyToManyField(Genre, through='GenreFilmwork')
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name = _('filmwork')
-        verbose_name_plural = _('filmworks')
-        db_table = '"content"."film_work"'
 
 
 class Person(TimeStampedMixin, models.Model):
@@ -79,9 +59,30 @@ class Person(TimeStampedMixin, models.Model):
         db_table = '"content"."person"'
 
 
-class PersonFilmwork(models.Model):
+class FilmWork(TimeStampedMixin):
     id = models.UUIDField(primary_key=True, default=uuid4, unique=True)
-    film_work = models.ForeignKey('Filmwork', to_field='id', on_delete=models.CASCADE)
+    title = models.CharField(_('title'), max_length=255)
+    description = models.TextField(_('description'), blank=True, null=True)
+    creation_date = models.DateField(_('creation date'), blank=True, null=True)
+    certificate = models.TextField(_('certificate'), blank=True, null=True)
+    file_path = models.FileField(_('file'), upload_to='film_works/', blank=True, null=True)
+    rating = models.FloatField(_('rating'), validators=[MinValueValidator(0)], blank=True, null=True)
+    type = models.CharField(_('type'), max_length=50, choices=FilmWorkType.choices)
+    genres = models.ManyToManyField(Genre, through='movies.GenreFilmWork')
+    persons = models.ManyToManyField(Person, through='movies.PersonFilmWork')
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = _('filmwork')
+        verbose_name_plural = _('filmworks')
+        db_table = '"content"."film_work"'
+
+
+class PersonFilmWork(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, unique=True)
+    film_work = models.ForeignKey('FilmWork', to_field='id', on_delete=models.CASCADE)
     person = models.ForeignKey('Person', to_field='id', on_delete=models.CASCADE)
     role = models.CharField(_('role'), max_length=255, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -91,5 +92,4 @@ class PersonFilmwork(models.Model):
         constraints = [
             UniqueConstraint(fields=['film_work', 'person', 'role'], name='unique_person_film_work')
         ]
-
 
