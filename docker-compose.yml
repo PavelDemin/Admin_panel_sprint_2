@@ -8,6 +8,9 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    volumes:
+      - ./static/:/app/static
+      - ./media/:/app/media
     depends_on:
       - postgres
     networks:

@@ -89,5 +89,5 @@ target/
 __pycache__/
 local_settings.py
 
-deploy/.env
-log/
+.env
+media/
