@@ -4,6 +4,8 @@ services:
     container_name: django-app
     build:
       context: .
+      args:
+        SECRET_KEY: ${SECRET_KEY}
     ports:
       - "8000:8000"
     env_file:
@@ -32,6 +34,8 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/logs/:/var/log/nginx
       - ./nginx/cache/:/etc/nginx/cache
+      - ./static/:/app/static
+      - ./media/:/app/media
     ports:
       - "80:80"
     networks:

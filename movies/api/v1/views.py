@@ -11,13 +11,16 @@ class MoviesApiMixin:
     model = FilmWork
     http_method_names = ['get']
 
+    def _aggregate_person(self, role):
+        return ArrayAgg('person__full_name', distinct=True, filter=Q(personfilmwork__role=role))
+
     def get_queryset(self):
         queryset = FilmWork.objects.prefetch_related('genres', 'persons').values(
             'id', 'title', 'description', 'creation_date', 'rating', 'type').annotate(
             genres=ArrayAgg('genres__name', distinct=True),
-            actors=ArrayAgg('persons__full_name', distinct=True, filter=Q(personfilmwork__role='actor')),
-            directors=ArrayAgg('persons__full_name', distinct=True, filter=Q(personfilmwork__role='director')),
-            writers=ArrayAgg('persons__full_name', distinct=True, filter=Q(personfilmwork__role='writer'))
+            actors=self._aggregate_person('actor'),
+            directors=self._aggregate_person('director'),
+            writers=self._aggregate_person('writer')
         )
         return queryset
 
