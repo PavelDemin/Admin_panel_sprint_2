@@ -12,7 +12,7 @@ class MoviesApiMixin:
     http_method_names = ['get']
 
     def _aggregate_person(self, role):
-        return ArrayAgg('person__full_name', distinct=True, filter=Q(personfilmwork__role=role))
+        return ArrayAgg('persons__full_name', distinct=True, filter=Q(personfilmwork__role=role))
 
     def get_queryset(self):
         queryset = FilmWork.objects.prefetch_related('genres', 'persons').values(
