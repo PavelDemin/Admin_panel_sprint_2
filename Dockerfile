@@ -1,10 +1,9 @@
-FROM python:latest
+FROM python:3.9.7-slim
 ENV PYTHONUNBUFFERED=1
 ARG SECRET_KEY
-
-RUN mkdir -p /app
-COPY . /app
+EXPOSE 8000
 WORKDIR /app
+COPY . /app
 
 RUN pip install -U pip
 RUN pip install -r requirements.txt
